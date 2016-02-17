@@ -2,7 +2,6 @@ package com.castlighthealth.epd.model;
 
 import java.util.List;
 import com.castlighthealth.epd.model.Participation;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -27,7 +26,7 @@ public class Provider {
     private String providerName;
 
     @Field(type = FieldType.Nested)
-    @OneToMany(mappedBy = "participation")
+    @OneToMany(mappedBy = "provider")
     private List<Participation> participations;
 
     @Column(table="provider_specialties")

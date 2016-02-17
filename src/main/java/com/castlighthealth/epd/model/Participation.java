@@ -1,7 +1,5 @@
 package com.castlighthealth.epd.model;
 
-import org.springframework.data.annotation.Id;
-
 import javax.persistence.*;
 import java.util.Set;
 
