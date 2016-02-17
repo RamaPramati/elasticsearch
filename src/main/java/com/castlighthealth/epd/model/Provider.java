@@ -2,20 +2,19 @@ package com.castlighthealth.epd.model;
 
 import java.util.List;
 import com.castlighthealth.epd.model.Participation;
+import org.springframework.data.annotation.*;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.*;
+import javax.persistence.Id;
 
 /**
  * Represents a person who is a healthcare provider.
  */
-@Document(indexName = "provider_sample", type = "provider")
 @Entity
 @Table(name="providers")
-@SecondaryTable(name="provider_specialties",
-                 pkJoinColumns = @PrimaryKeyJoinColumn(name="provider_id"))
 public class Provider {
 
     @Id
@@ -26,18 +25,18 @@ public class Provider {
     private String providerName;
 
     @Field(type = FieldType.Nested)
-    @OneToMany(mappedBy = "provider")
+    @OneToMany(mappedBy = "provider", fetch = FetchType.EAGER)
     private List<Participation> participations;
 
-    @Column(table="provider_specialties")
-    private List<Integer> specialtyIds;
+    @OneToMany(mappedBy = "provider", fetch = FetchType.EAGER)
+    private List<ProviderSpecialties> specialtyIds;
 
     public Provider() {
     }
 
     public Provider(int providerId, String providerName,
                     List<Participation> participations,
-                    List<Integer> specialtyIds) {
+                    List<ProviderSpecialties> specialtyIds) {
         this.providerId = providerId;
         this.providerName = providerName;
         this.participations = participations;
@@ -60,12 +59,12 @@ public class Provider {
         this.providerName = providerName;
     }
 
-    public List<Integer> getSpecialtyIds() {
-        return specialtyIds;
+    public List<Participation> getParticipations() {
+        return participations;
     }
 
-    public void setSpecialtyIds(List<Integer> specialtyIds) {
-        this.specialtyIds = specialtyIds;
+    public List<ProviderSpecialties> getSpecialtyIds() {
+        return specialtyIds;
     }
 
     @Override
@@ -90,8 +89,8 @@ public class Provider {
 
         StringBuilder sb = new StringBuilder("[");
         if (specialtyIds != null) {
-            for (int sp : specialtyIds) {
-                sb.append(sp).append(",");
+            for (ProviderSpecialties sp : specialtyIds) {
+                sb.append(sp.getSpecialtyId()).append(",");
             }
         }
         sb.append("]");

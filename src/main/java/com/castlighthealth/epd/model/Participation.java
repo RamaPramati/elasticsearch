@@ -22,6 +22,9 @@ public class Participation {
     @JoinColumn(name="provider_location_id")
     private ProviderLocation providerLocation;
 
+    public Participation() {
+    }
+
     public Participation(int participationId, Provider provider, int providerNetworkId, ProviderLocation providerLocation) {
         this.participationId = participationId;
         this.provider = provider;
@@ -35,5 +38,13 @@ public class Participation {
 
     public void setParticipationId(int participationId) {
         this.participationId = participationId;
+    }
+
+    public int getProviderNetworkId() {
+        return providerNetworkId;
+    }
+
+    public ProviderLocation getProviderLocation() {
+        return providerLocation;
     }
 }

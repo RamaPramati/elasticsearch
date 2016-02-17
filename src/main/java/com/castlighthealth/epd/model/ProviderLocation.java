@@ -27,4 +27,16 @@ public class ProviderLocation {
         this.lat = lat;
         this.lon = lon;
     }
+
+    public String getState() {
+        return state;
+    }
+
+    public float getLat() {
+        return lat;
+    }
+
+    public float getLon() {
+        return lon;
+    }
 }
