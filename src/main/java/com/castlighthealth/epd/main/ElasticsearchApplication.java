@@ -40,7 +40,11 @@ public class ElasticsearchApplication {
             System.out.println("\n\n\n");
 
             providerRepository.save(new ESProvider(provider));
-
+            ESProvider esprovider = providerRepository.findOne(286);
+            System.out.println(esprovider.getProviderName() + " : " + esprovider.getSpecialtyIds());
+            System.out.println("\n\n\n");
+            System.out.println(esprovider.getProviderName() + " : " + esprovider.getSpecialtyIds());
+            System.out.println("\n\n\n");
 		};
 	}
 }

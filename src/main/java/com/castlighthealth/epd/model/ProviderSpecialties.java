@@ -20,15 +20,7 @@ public class ProviderSpecialties {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getSpecialtyId() {
         return specialtyId;
-    }
-
-    public void setSpecialtyId(int specialtyId) {
-        this.specialtyId = specialtyId;
     }
 }

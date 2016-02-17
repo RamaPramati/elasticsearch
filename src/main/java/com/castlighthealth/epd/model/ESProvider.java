@@ -8,6 +8,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  * Created by naveenb on 2/17/16.
  */
 @Document(indexName = "provider_sample")
-public class ESProvider {
+public class ESProvider implements Serializable {
 
     @Id
     private int providerId;
@@ -37,11 +38,30 @@ public class ESProvider {
         }
     }
 
+    public ESProvider() {
+    }
+
     public ESProvider(int providerId, String providerName, List<ESParticipation> esParticipations, List<Integer> specialtyIds) {
         this.providerId = providerId;
         this.providerName = providerName;
         this.esParticipations = esParticipations;
         this.specialtyIds = specialtyIds;
+    }
+
+    public int getProviderId() {
+        return providerId;
+    }
+
+    public String getProviderName() {
+        return providerName;
+    }
+
+    public List<ESParticipation> getEsParticipations() {
+        return esParticipations;
+    }
+
+    public List<Integer> getSpecialtyIds() {
+        return specialtyIds;
     }
 }
 

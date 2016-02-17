@@ -21,13 +21,6 @@ public class ProviderLocation {
     @Column(name="longitude")
     private float lon;
 
-    public ProviderLocation(int id, String state, float lat, float lon) {
-        this.id = id;
-        this.state = state;
-        this.lat = lat;
-        this.lon = lon;
-    }
-
     public String getState() {
         return state;
     }
