@@ -7,31 +7,40 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import javax.persistence.*;
+
 /**
  * Represents a person who is a healthcare provider.
  */
 @Document(indexName = "provider_sample", type = "provider")
 @Entity
-@Table(name = "care_teams")
+@Table(name="providers")
+@SecondaryTable(name="provider_specialties",
+                 pkJoinColumns = @PrimaryKeyJoinColumn(name="provider_id"))
 public class Provider {
+
     @Id
+    @Column(name="id")
     private int providerId;
+
+    @Column(name="name")
     private String providerName;
-    private String providerNaturalName;
 
     @Field(type = FieldType.Nested)
+    @OneToMany(mappedBy = "participation")
     private List<Participation> participations;
+
+    @Column(table="provider_specialties")
     private List<Integer> specialtyIds;
 
     public Provider() {
     }
 
-    public Provider(int providerId, String providerName, String providerNaturalName,
+    public Provider(int providerId, String providerName,
                     List<Participation> participations,
                     List<Integer> specialtyIds) {
         this.providerId = providerId;
         this.providerName = providerName;
-        this.providerNaturalName = providerNaturalName;
         this.participations = participations;
         this.specialtyIds = specialtyIds;
     }
@@ -50,14 +59,6 @@ public class Provider {
 
     public void setProviderName(String providerName) {
         this.providerName = providerName;
-    }
-
-    public String getProviderNaturalName() {
-        return providerNaturalName;
-    }
-
-    public void setProviderNaturalName(String providerNaturalName) {
-        this.providerNaturalName = providerNaturalName;
     }
 
     public List<Integer> getSpecialtyIds() {
