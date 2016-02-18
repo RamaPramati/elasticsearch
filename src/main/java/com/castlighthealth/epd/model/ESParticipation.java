@@ -1,6 +1,9 @@
 package com.castlighthealth.epd.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.io.Serializable;
 
@@ -9,10 +12,40 @@ import java.io.Serializable;
  */
 public class ESParticipation implements Serializable {
     @Id
+    @Field(
+            type = FieldType.Integer,
+            index = FieldIndex.analyzed,
+            searchAnalyzer = "standard",
+            indexAnalyzer = "standard",
+            store = true
+    )
     private int participationId;
     private int providerNetworkId;
+
+    @Field(
+            type = FieldType.Double,
+            index = FieldIndex.analyzed,
+            searchAnalyzer = "standard",
+            indexAnalyzer = "standard",
+            store = true
+    )
     private double lat;
+
+    @Field(
+            type = FieldType.Double,
+            index = FieldIndex.analyzed,
+            searchAnalyzer = "standard",
+            indexAnalyzer = "standard",
+            store = true
+    )
     private double lon;
+    @Field(
+            type = FieldType.String,
+            index = FieldIndex.analyzed,
+            searchAnalyzer = "standard",
+            indexAnalyzer = "standard",
+            store = true
+    )
     private String state;
 
     public ESParticipation() {

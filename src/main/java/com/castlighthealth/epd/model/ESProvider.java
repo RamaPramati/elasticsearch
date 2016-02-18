@@ -3,6 +3,7 @@ package com.castlighthealth.epd.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.Column;
@@ -19,9 +20,38 @@ import java.util.List;
 public class ESProvider implements Serializable {
 
     @Id
+    @Field(
+            type = FieldType.Integer,
+            index = FieldIndex.analyzed,
+            searchAnalyzer = "standard",
+            indexAnalyzer = "standard",
+            store = true
+    )
     private int providerId;
+
+    @Field(
+            type = FieldType.String,
+            index = FieldIndex.not_analyzed,
+            store = true
+    )
     private String providerName;
+
+    @Field(
+            type = FieldType.Nested,
+            index = FieldIndex.analyzed,
+            searchAnalyzer = "standard",
+            indexAnalyzer = "standard",
+            store = true
+    )
     private List<ESParticipation> esParticipations;
+
+    @Field(
+            type = FieldType.Integer,
+            index = FieldIndex.analyzed,
+            searchAnalyzer = "standard",
+            indexAnalyzer = "standard",
+            store = true
+    )
     private List<Integer> specialtyIds;
 
 

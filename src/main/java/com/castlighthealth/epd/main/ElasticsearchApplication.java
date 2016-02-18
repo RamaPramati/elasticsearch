@@ -12,9 +12,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.util.StopWatch;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication
 @EnableJpaRepositories("com.castlighthealth.epd.repositories")
@@ -24,6 +33,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class ElasticsearchApplication {
 	@Autowired
 	ProviderJPARepository providerJPARepository;
+	@Inject
+	ElasticsearchTemplate elasticsearchTemplate;
 
 	public static void main(String[] args) {
 
@@ -34,17 +45,43 @@ public class ElasticsearchApplication {
 	@Bean
 	public CommandLineRunner demo(ProviderJPARepository providerJPARepository, ProviderRepository providerRepository) {
 		return (args) -> {
-			Provider provider = providerJPARepository.findOne(286);
-            System.out.println("\n\n\n");
-            System.out.println(provider);
-            System.out.println("\n\n\n");
+			boolean done = true;
+			int page_size = 10000;
+			Page<Provider> page = null;
+			int page_number = 0;
 
-            providerRepository.save(new ESProvider(provider));
-            ESProvider esprovider = providerRepository.findOne(286);
-            System.out.println(esprovider.getProviderName() + " : " + esprovider.getSpecialtyIds());
-            System.out.println("\n\n\n");
-            System.out.println(esprovider.getProviderName() + " : " + esprovider.getSpecialtyIds());
-            System.out.println("\n\n\n");
+			StopWatch stopWatch = new StopWatch();
+			stopWatch.start();
+
+			do {
+				StopWatch pageTime = new StopWatch();
+				pageTime.start();
+				page = providerJPARepository.findAll(new PageRequest(page_number,page_size));
+				pageTime.stop();
+				System.out.println("Time for fetching page records " + page_number + " : " + pageTime.getLastTaskTimeMillis() );
+				page_number++;
+
+				StopWatch indexTime = new StopWatch();
+				indexTime.start();
+				//providerRepository.save(page.getContent());
+
+				List<ESProvider> providerList = new ArrayList<>(page_size);
+				page.forEach(provider -> providerList.add(new ESProvider(provider)));
+
+				//for (Provider provider : page.getContent()) {
+					providerRepository.save(providerList);
+				//}
+				indexTime.stop();
+				System.out.println("Time for indexing the page records :" + indexTime.getLastTaskTimeMillis() );
+			} while (page.hasNext());
+
+
+
+
+//            	ESProvider esprovider = providerRepository.findOne(286);
+//            System.out.println("\n\n\n");
+//            System.out.println(esprovider);
+//            System.out.println("\n\n\n");
 		};
 	}
 }
