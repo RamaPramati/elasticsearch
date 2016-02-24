@@ -4,6 +4,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.GeoPointField;
+import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 
 import java.io.Serializable;
 
@@ -12,40 +14,16 @@ import java.io.Serializable;
  */
 public class ESParticipation implements Serializable {
     @Id
-    @Field(
-            type = FieldType.Integer,
-            index = FieldIndex.analyzed,
-            searchAnalyzer = "standard",
-            indexAnalyzer = "standard",
-            store = true
-    )
+    @Field(store = true)
     private int participationId;
+
+    @Field(store = true)
     private int providerNetworkId;
 
-    @Field(
-            type = FieldType.Double,
-            index = FieldIndex.analyzed,
-            searchAnalyzer = "standard",
-            indexAnalyzer = "standard",
-            store = true
-    )
-    private double lat;
+    @GeoPointField
+    private GeoPoint geoPoint;
 
-    @Field(
-            type = FieldType.Double,
-            index = FieldIndex.analyzed,
-            searchAnalyzer = "standard",
-            indexAnalyzer = "standard",
-            store = true
-    )
-    private double lon;
-    @Field(
-            type = FieldType.String,
-            index = FieldIndex.analyzed,
-            searchAnalyzer = "standard",
-            indexAnalyzer = "standard",
-            store = true
-    )
+    @Field(store = true)
     private String state;
 
     public ESParticipation() {
@@ -54,17 +32,11 @@ public class ESParticipation implements Serializable {
     public ESParticipation(Participation participation) {
         this.participationId = participation.getParticipationId();
         this.providerNetworkId = participation.getProviderNetworkId();
-        this.lat = participation.getProviderLocation().getLat();
-        this.lon = participation.getProviderLocation().getLon();
+        this.geoPoint = new GeoPoint(participation.getProviderLocation().getLat(),participation.getProviderLocation().getLon());
         this.state = participation.getProviderLocation().getState();
     }
 
-    public ESParticipation(int participationId, int providerNetworkId, double lat, double lon) {
-        this.participationId = participationId;
-        this.providerNetworkId = providerNetworkId;
-        this.lat = lat;
-        this.lon = lon;
-    }
+
 
     public int getParticipationId() {
         return participationId;
@@ -74,13 +46,7 @@ public class ESParticipation implements Serializable {
         return providerNetworkId;
     }
 
-    public double getLat() {
-        return lat;
-    }
 
-    public double getLon() {
-        return lon;
-    }
 
     public String getState() {
         return state;

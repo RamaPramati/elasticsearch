@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by naveenb on 2/17/16.
  */
-@Document(indexName = "provider_sample")
+@Document(indexName = "provider" , type="provider")
 public class ESProvider implements Serializable {
 
     @Id
