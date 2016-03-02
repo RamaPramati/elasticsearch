@@ -1,9 +1,7 @@
 package com.castlighthealth.epd.model;
 
 import java.util.List;
-import com.castlighthealth.epd.model.Participation;
-import org.springframework.data.annotation.*;
-import org.springframework.data.elasticsearch.annotations.Document;
+
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
@@ -15,11 +13,20 @@ import javax.persistence.Id;
  */
 @Entity
 @Table(name="providers")
+@NamedQueries({
+        @NamedQuery(name = Provider.QUERY_FIND_PROVIDERS_BETWEEN,
+                query = "SELECT p FROM Provider p WHERE p.id BETWEEN :" + Provider.MIN_PROVIDER_ID + " AND :" + Provider.MAX_PROVIDER_ID)
+})
 public class Provider {
+
+    public static final String QUERY_FIND_PROVIDERS_BETWEEN = "Provider.findProviderBetween";
+    public static final String MIN_PROVIDER_ID = "minProviderId";
+    public static final String MAX_PROVIDER_ID = "maxProviderId";
+
 
     @Id
     @Column(name="id")
-    private int providerId;
+    private int id;
 
     @Column(name="name")
     private String providerName;
@@ -34,21 +41,21 @@ public class Provider {
     public Provider() {
     }
 
-    public Provider(int providerId, String providerName,
+    public Provider(int id, String providerName,
                     List<Participation> participations,
                     List<ProviderSpecialties> specialtyIds) {
-        this.providerId = providerId;
+        this.id = id;
         this.providerName = providerName;
         this.participations = participations;
         this.specialtyIds = specialtyIds;
     }
 
-    public int getProviderId() {
-        return providerId;
+    public int getId() {
+        return id;
     }
 
-    public void setProviderId(int providerId) {
-        this.providerId = providerId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getProviderName() {
@@ -74,14 +81,14 @@ public class Provider {
 
         Provider provider = (Provider) o;
 
-        if (providerId != provider.providerId) return false;
+        if (id != provider.id) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return providerId;
+        return id;
     }
 
     @Override
@@ -96,7 +103,7 @@ public class Provider {
         sb.append("]");
 
         return "Provider{" +
-                "providerId=" + providerId +
+                "id=" + id +
                 ", providerName='" + providerName + '\'' +
                 ", specialty=" + sb.toString() +
                 '}';

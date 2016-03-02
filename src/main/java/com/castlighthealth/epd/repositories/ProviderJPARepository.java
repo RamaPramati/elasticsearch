@@ -5,7 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
+
 public interface ProviderJPARepository extends JpaRepository<Provider, Integer>
 {
-//    public Iterable<Provider> findIdsBetween(int startRange, int endRange);
+    public List<Provider> findByIdBetween(int startRange, int endRange);
 }

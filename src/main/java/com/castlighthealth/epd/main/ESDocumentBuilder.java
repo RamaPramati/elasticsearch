@@ -3,6 +3,7 @@ package com.castlighthealth.epd.main;
 import com.castlighthealth.epd.model.ESProvider;
 import com.castlighthealth.epd.model.Provider;
 import com.castlighthealth.epd.repositories.ProviderJPARepository;
+import com.castlighthealth.epd.repositories.ProviderJPARepositoryImpl;
 import com.castlighthealth.epd.repositories.ProviderRepository;
 import org.apache.log4j.Logger;
 import org.springframework.data.domain.Page;
@@ -57,23 +58,24 @@ public class ESDocumentBuilder extends RecursiveAction {
         } else {
 
             logger.info("Indexing from pages " + startPage + " to  " + endPage);
-            for (int i = (int) startPage; i <= endPage ; i++) {
+           // for (int i = (int) startPage; i <= endPage ; i++) {
                 StopWatch pageTime = new StopWatch();
                 pageTime.start();
-                Page<Provider> page = providerJPARepository.findAll(new PageRequest(i, pageSize));
+                List<Provider> providers = providerJPARepository.findByIdBetween((int)(startPage*100000) , (int)(endPage * 100000 + 99999) );
                 pageTime.stop();
-                logger.info("Time for fetching page records " + i + " : " + pageTime.getLastTaskTimeMillis());
+                logger.info("Getting records between :  " +(startPage*100000) +" : " + (endPage * 100000 + 99999)  + " --- Total records" + providers.size());
+
                 List<ESProvider> providerList = new ArrayList<>(pageSize);
-                page.forEach(provider -> providerList.add(new ESProvider(provider)));
+                providers.forEach(provider -> providerList.add(new ESProvider(provider)));
                 if(!providerList.isEmpty()) {
                     StopWatch indexTime = new StopWatch();
                     indexTime.start();
                     providerRepository.save(providerList);
                     indexTime.stop();
-                   logger.info("Time for indexing the page records :  " + i + " : "  + indexTime.getLastTaskTimeMillis());
+                   logger.info("Time for indexing the page records : " + indexTime.getLastTaskTimeMillis());
                 }
 
-            }
+          //  }
         }
     }
 

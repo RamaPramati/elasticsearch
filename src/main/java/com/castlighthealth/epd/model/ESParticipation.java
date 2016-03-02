@@ -20,7 +20,7 @@ public class ESParticipation implements Serializable {
     @Field(store = true)
     private int providerNetworkId;
 
-    @GeoPointField
+    @GeoPointField()
     private GeoPoint geoPoint;
 
     @Field(store = true)

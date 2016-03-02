@@ -6,9 +6,6 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +53,7 @@ public class ESProvider implements Serializable {
 
 
     public ESProvider(Provider provider) {
-        this.providerId = provider.getProviderId();
+        this.providerId = provider.getId();
         this.providerName = provider.getProviderName();
         this.esParticipations = new ArrayList<>(provider.getParticipations().size());
         for( Participation p : provider.getParticipations()) {
